@@ -1,37 +1,16 @@
 'use strict';
+var Routes = require('./src/routes');
+var Config = require('./src/config/config');
 var Hapi = require('hapi');
-var Bcrypt = require('bcrypt');
-var Basic = require('hapi-auth-basic');
 var Inert = require('inert');
-var Mongoose = require('mongoose');
+var Db = require('./src/config/database');
 
 var server = new Hapi.Server();
 
-server.connection({
-	host: 'localhost',
-	port: 1338
-});
+server.connection(Config.server);
 
-server.register(Inert, (err) => {
-    if (err) {
-        throw err;
-    }
-
-    server.route({
-        method: 'GET',
-        path: '/',
-        handler: function (request, reply) {
-            reply.file('./public/signup.html');
-        }
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/public/style.css',
-        handler: function (request, reply) {
-            reply.file('./public/style.css');
-        }
-    });
+server.register(Inert, function(err) {
+    server.route(Routes);
 });
 
 server.start(function() {
