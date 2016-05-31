@@ -13,9 +13,7 @@ exports.get = {
 exports.login = {
 	auth: false,
 	description: 'Login Page',
-	handler: {
-	    directory: {
-	        path: './src/public/login.html'
-	    }
+	handler: function(request, reply) {
+		reply.file('./src/public/login.html');
 	}
 };

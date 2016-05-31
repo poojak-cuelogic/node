@@ -5,6 +5,7 @@ var Joi = require('joi'),
     User = require('../model').User;
 
 exports.create = {
+	auth: false,
 	validate: {
         payload: {
             username: Joi.string().required(),
@@ -44,7 +45,8 @@ exports.create = {
 	        user.save(function(err, user) {
 	            if (!err) {
 	                reply(user).created('/login'); // HTTP 201
-	            } else {
+	            } 
+	            else {
 	                if (11000 === err.code || 11001 === err.code) {
 	                    reply(Boom.forbidden("Username already exists!!"));
 	                } 
@@ -65,6 +67,7 @@ exports.create = {
 };
 
 exports.get = {
+	auth: false,
 	validate: {
         params: {
             username: Joi.string()
@@ -84,6 +87,7 @@ exports.get = {
 };
 
 exports.getAll = {
+	auth: false,
 	handler: function(request, reply) {
         User.find({}, function(err, user) {
             if (!err) {

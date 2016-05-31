@@ -1,5 +1,5 @@
 var Static = require('./static'),
-	Auth = Static = require('./plugins/auth'),
+	Auth = require('./plugins/auth'),
 	User = require('./plugins/user');
 
 var getSignUpHandler = function (request, reply) {
@@ -7,7 +7,7 @@ var getSignUpHandler = function (request, reply) {
 }
 
 module.exports = [
-	{   method: 'GET', 		path: '/', 					handler: getSignUpHandler },
+	{   method: 'GET', 		path: '/', 					handler: getSignUpHandler, config: {auth: false} },
 	{   method: 'GET', 		path: '/public/{path*}', 	config: Static.get },
 	{	method: 'POST', 	path: '/user', 				config: User.create },
 	{	method: 'GET', 		path: '/user/{username}', 	config: User.get },
