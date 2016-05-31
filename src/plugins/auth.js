@@ -4,6 +4,7 @@ var Joi = require('joi'),
     async = require('async'),
     JWT = require('jsonwebtoken'),
     User = require('../model').User;
+    UserActivity = require('../model').UserActivity;
 
 exports.login = {
 	auth: false,
@@ -23,7 +24,24 @@ exports.login = {
 		        	var secret = 'ThisIsASuperSecretKeyWith3Zeros000andaHas#';
 					var obj   = { id:user.username, "name": user.firstname }; 
 					var token = JWT.sign(obj, secret);
-		          	reply('User authenticated with Token: ' + token);
+
+					//Save users login activity
+					var activity = {
+						'username' : user.username,
+						'UAString' : token,
+						'ipAddress' : request.info.remoteAddress
+					};
+
+					var useractivity = new UserActivity(activity); 
+					useractivity.save(function(err, useractivity) {
+			            if (!err) {
+			                console.log('User activity recorded');
+			                reply('User authenticated with Token: ' + token);
+			            }
+			            else {
+			            	console.log(err);
+			            }
+			        }); 
 		        } 
 		        else {
 		          	reply('User authentication failed').code(400);

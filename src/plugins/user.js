@@ -67,7 +67,7 @@ exports.create = {
 };
 
 exports.get = {
-	auth: false,
+	auth: 'jwt',
 	validate: {
         params: {
             username: Joi.string()
@@ -87,7 +87,7 @@ exports.get = {
 };
 
 exports.getAll = {
-	auth: false,
+	auth: 'jwt',
 	handler: function(request, reply) {
         User.find({}, function(err, user) {
             if (!err) {
@@ -100,6 +100,7 @@ exports.getAll = {
 };
 
 exports.update = {
+	auth: 'jwt',
     validate: {
         payload: {
             username: Joi.string().required(),
