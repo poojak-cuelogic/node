@@ -8,6 +8,7 @@
     "bcrypt": "^0.8.6",
     "bluebird": "^3.4.0",
     "boom": "^3.2.1",
+    "dotenv": "^2.0.0",
     "hapi": "^13.4.1",
     "hapi-auth-basic": "^4.2.0",
     "hapi-auth-jwt2": "^7.0.0",

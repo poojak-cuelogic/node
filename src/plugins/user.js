@@ -2,7 +2,9 @@ var Joi = require('joi'),
     Boom = require('boom'),
     Bcrypt = require('bcrypt'),
     async = require('async'),
-    User = require('../model').User;
+    User = require('../model').User,
+    Mongoose = require('mongoose'),
+    UserActivity = require('../model').UserActivity;
 
 exports.create = {
 	auth: false,
@@ -182,3 +184,25 @@ exports.update = {
 //         });
 //     }
 // };
+
+exports.inactiveInLast5Days = {
+	auth: false,
+	handler: function(request, reply) {
+		var cutoff = new Date();
+		cutoff.setDate(cutoff.getDate()-5);
+        UserActivity.find({date: { $gt: cutoff } }, 'user', function(err, userIds) {
+            if (!err) {
+                User.find({_id: {$not: {$in: userIds.map(function(o){ return Mongoose.Types.ObjectId(o.user);}) } } }, function(err, user) {
+		            if (!err) {
+		                reply(user);
+		            } else {
+		                reply(Boom.badImplementation(err)); // 500 error
+		            }
+		        });
+            }
+            else {
+                reply(Boom.badImplementation(err)); // 500 error
+            }
+        });
+    }
+};

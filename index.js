@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 var Routes = require('./src/routes');
 var Config = require('./src/config/config');
 var Hapi = require('hapi');

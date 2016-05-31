@@ -27,7 +27,7 @@ exports.login = {
 
 					//Save users login activity
 					var activity = {
-						'username' : user.username,
+						'user' : user._id,
 						'UAString' : token,
 						'ipAddress' : request.info.remoteAddress
 					};

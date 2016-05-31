@@ -15,4 +15,5 @@ module.exports = [
 	{ 	method: 'PUT', 		path: '/user/{username}', 	config: User.update },
 	{	method: 'GET', 		path: '/login', 			config: Static.login },
 	{	method: 'POST',		path: '/login', 			config: Auth.login },
+	{	method: 'GET', 		path: '/users/inactive', 	config: User.inactiveInLast5Days },
 ];
