@@ -21,7 +21,7 @@ exports.login = {
 		    }
     		Bcrypt.compare(request.payload.password, user.password, (err, isValid) => {
 		        if(!err && isValid) {
-		        	var secret = 'ThisIsASuperSecretKeyWith3Zeros000andaHas#';
+		        	var secret = process.env.SECRET;
 					var obj   = { id:user.username, "name": user.firstname }; 
 					var token = JWT.sign(obj, secret);
 

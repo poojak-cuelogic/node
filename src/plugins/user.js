@@ -115,7 +115,6 @@ exports.update = {
         User.findOne({
             'username': request.params.username
         }, function(err, user) {
-
 			function generateSalt(callback) {
 				Bcrypt.genSalt(9, function(err, salt) {
 			        if (err) {
@@ -138,10 +137,12 @@ exports.update = {
 			}
 
 			function save(err, user) {
+				user.firstname = request.payload.firstname;
+				user.lastname = request.payload.lastname;
 	        	if (!err) {
 	                user.save(function(err, user) {
 	                    if (!err) {
-	                        reply(user).updated('/user/' + user.username); // HTTP 201
+	                        reply(user); // HTTP 201
 	                    } else {
 	                        if (11000 === err.code || 11001 === err.code) {
 	                            reply(Boom.forbidden("Duplicate Username"));
@@ -189,7 +190,7 @@ exports.inactiveInLast5Days = {
 	auth: false,
 	handler: function(request, reply) {
 		var cutoff = new Date();
-		cutoff.setDate(cutoff.getDate()-5);
+		cutoff.setDate(cutoff.getDate() - process.env.NUM_OF_DAYS);
         UserActivity.find({date: { $gt: cutoff } }, 'user', function(err, userIds) {
             if (!err) {
                 User.find({_id: {$not: {$in: userIds.map(function(o){ return Mongoose.Types.ObjectId(o.user);}) } } }, function(err, user) {

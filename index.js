@@ -6,6 +6,7 @@ var Hapi = require('hapi');
 var Inert = require('inert');
 var JWT2 = require('hapi-auth-jwt2');
 var Db = require('./src/config/database');
+var User = require('./src/model').User;
 
 
 var server = new Hapi.Server();
@@ -13,29 +14,25 @@ var server = new Hapi.Server();
 server.connection(Config.server);
 
 var validate = function (decoded, request, callback) {
-	console.log('reached here');
-	var users = User.getAll();
-	const user = users[request.payload.username];
-    if (!user) {
-        return callback(null, false);
-    }
-
-    Bcrypt.compare(password, user.password, (err, isValid) => {
-        callback(err, isValid);
-    });
+	User.findOne({username: decoded.id}, function(err, user) {
+		if(!user) {
+	        return callback(null, false);
+	    } else {
+	    	callback(null, true);
+	    }
+	});
 };
 
-server.register([Inert, JWT2], function (err) {
+server.register([Inert, JWT2], (err) => {
     if(err){
       console.log(err);
     }
     server.auth.strategy('jwt', 'jwt',
     { 
-    	key: 'NeverShareYourSecret',          
+    	key: process.env.SECRET,          
       	validateFunc: validate,            
       	verifyOptions: { algorithms: [ 'HS256' ] } 
     });
-    // server.auth.default('jwt');
     server.route(Routes);
 });
 
